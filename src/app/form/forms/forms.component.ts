@@ -7,6 +7,9 @@ import { NgForm } from '@angular/forms';
   styleUrl: './forms.component.css'
 })
 export class FormsComponent {
+  genders = ["male", "female"]
+  defaultValue: string = "pet"
+  answer: string= '';
   formData: any = {}; // Object to store form data
 
   onSubmit(form: NgForm) {

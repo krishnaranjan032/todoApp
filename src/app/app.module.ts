@@ -7,12 +7,14 @@ import { DashboardComponent } from './component/dashboard/dashboard.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsComponent } from './form/forms/forms.component';
+import { HttpComponent } from './http/http.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
-    FormsComponent
+    FormsComponent,
+    HttpComponent
   ],
   imports: [
     BrowserModule,
