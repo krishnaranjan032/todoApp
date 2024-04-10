@@ -97,7 +97,9 @@ export class HttpComponent implements OnInit {
 
   onClearPosts() {
     // Clear loadedPosts array
-    this.loadedPosts = [];
+    this.httpService.deletePosts().subscribe(() => {
+      this.loadedPosts = []
+    })
   }
 
   

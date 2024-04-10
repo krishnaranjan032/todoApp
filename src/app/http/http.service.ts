@@ -39,4 +39,8 @@ export class HttpService{
     )
    
     }
+
+    deletePosts(){
+        return this.http.delete('https://angular-tutorial-6a450-default-rtdb.firebaseio.com/posts.json')
+    }
 }
