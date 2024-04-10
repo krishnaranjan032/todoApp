@@ -58,12 +58,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { Post } from './post.model';
+import { HttpService } from './http.service';
 
-interface Post {
-  id: string;
-  title: string;
-  content: string;
-}
 
 @Component({
   selector: 'app-http',
@@ -73,25 +70,29 @@ interface Post {
 export class HttpComponent implements OnInit {
   loadedPosts: Post[] = [];
 
-  constructor(private http: HttpClient) {}
+  isFetching: boolean = false;
+
+  constructor(private http: HttpClient, private httpService: HttpService) {}
 
   ngOnInit() {
-    this.fetchPosts();
+    this.isFetching = true;
+    this.httpService.fetchPosts().subscribe(posts => {
+      this.isFetching = false;
+      this.loadedPosts = posts;
+    });
   }
 
   onCreatePost(postData: { title: string; content: string }) {
-    this.http
-      .post<{ name: string }>( // Add type annotation for the expected response
-        'https://angular-tutorial-6a450-default-rtdb.firebaseio.com/posts.json',
-        postData
-      )
-      .subscribe(responseData => {
-        console.log(responseData);
-      });
+    // send http request
+    this.httpService.createAndStorePost(postData.title, postData.content)
   }
 
   onFetchPosts() {
-    this.fetchPosts();
+    this.isFetching = true;
+    this.httpService.fetchPosts().subscribe(posts => {
+      this.isFetching = false;
+      this.loadedPosts = posts;
+    });
   }
 
   onClearPosts() {
@@ -99,24 +100,5 @@ export class HttpComponent implements OnInit {
     this.loadedPosts = [];
   }
 
-  private fetchPosts() {
-    this.http.get<{ [key: string]: Post }>( // Add type annotation for the expected response
-      'https://angular-tutorial-6a450-default-rtdb.firebaseio.com/posts.json'
-    )
-    .pipe(
-      map(responseData => {
-        const postArray: Post[] = [];
-        for (const key in responseData) {
-          if (responseData.hasOwnProperty(key)) {
-            postArray.push({ ...responseData[key], id: key });
-          }
-        }
-        // console.log(postArray)
-        return postArray;
-      })
-    )
-    .subscribe(posts => {
-      this.loadedPosts = posts; // Assign fetched posts to loadedPosts array
-    });
-  }
+  
 }
