@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsComponent } from './form/forms/forms.component';
 import { HttpComponent } from './http/http.component';
+import { Subscription } from 'rxjs';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { HttpComponent } from './http/http.component';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    
   ],
   providers: [],
   bootstrap: [AppComponent]

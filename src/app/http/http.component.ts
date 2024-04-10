@@ -55,11 +55,12 @@
 // }
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Post } from './post.model';
 import { HttpService } from './http.service';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -67,18 +68,27 @@ import { HttpService } from './http.service';
   templateUrl: './http.component.html',
   styleUrls: ['./http.component.css']
 })
-export class HttpComponent implements OnInit {
+export class HttpComponent implements OnInit, OnDestroy {
   loadedPosts: Post[] = [];
 
   isFetching: boolean = false;
+  error: string = '';
+  errorSub: Subscription ;
+  
 
-  constructor(private http: HttpClient, private httpService: HttpService) {}
+  constructor(private http: HttpClient, private httpService: HttpService ) {
+    this.errorSub = new Subscription(); 
+  }
 
   ngOnInit() {
+    this.errorSub = this.httpService.error.subscribe(errorMessage => {this.error = errorMessage})
     this.isFetching = true;
+    
     this.httpService.fetchPosts().subscribe(posts => {
       this.isFetching = false;
       this.loadedPosts = posts;
+    }, error => {
+      this.error = error.message
     });
   }
 
@@ -92,6 +102,8 @@ export class HttpComponent implements OnInit {
     this.httpService.fetchPosts().subscribe(posts => {
       this.isFetching = false;
       this.loadedPosts = posts;
+    }, error => {
+      this.error = error.message
     });
   }
 
@@ -102,5 +114,11 @@ export class HttpComponent implements OnInit {
     })
   }
 
-  
+  onHandleError(){
+    this.error = ''
+  }
+
+  ngOnDestroy(): void {
+      this.errorSub.unsubscribe();
+  }
 }
